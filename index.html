@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FATY ACCESSORIES</title>
+    <link rel="icon" href="https://img.icons8.com/emoji/48/sparkles.png?v=2" type="image/png">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&family=Alex+Brush&display=swap" rel="stylesheet">
+    
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="logo-container" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+        <div class="logo-main">FATY</div>
+        <div class="logo-sub">Accessories</div>
+    </div>
+    <ul class="nav-links">
+        <li onclick="toggleModal('auth-modal')" data-en="Account" data-fr="Compte">Account</li>
+        <li onclick="toggleModal('contact-modal')" data-en="Contact Us" data-fr="Contact">Contact Us</li>
+        <li onclick="toggleModal('bag-modal')">Bag (<span id="count">0</span>)</li>
+        <li onclick="toggleLang()" style="cursor:pointer">🌐</li>
+    </ul>
+    <div id="lang-drop" style="display:none; position:absolute; top:60px; right:5%; background:white; padding:10px; border-radius:10px; box-shadow:0 10px 30px rgba(0,0,0,0.1); z-index:6000;">
+        <div onclick="setLang('en')" style="padding:10px; cursor:pointer">EN</div>
+        <div onclick="setLang('fr')" style="padding:10px; cursor:pointer">FR</div>
+    </div>
+</nav>
+
+<header id="hero-header">
+    <div class="hero-square">
+        <h1 id="hero-title" data-en="Elegance in Every Bead" data-fr="L'élégance dans chaque perle">Elegance in Every Bead</h1>
+        <button class="btn-black" onclick="window.scrollTo({top:window.innerHeight,behavior:'smooth'})" data-en="Shop Collection" data-fr="Acheter">Shop Collection</button>
+    </div>
+</header>
+
+<div class="content-wrapper">
+    <section class="products">
+        <div class="product-card">
+            <img src="1.jpg">
+            <h3 data-en="Rose Pendant" data-fr="Pendentif Rose">Rose Pendant</h3><p>15.000 DT</p>
+            <button class="btn-black" onclick="addToBag('Rose Pendant', 15.000, '1.jpg')" data-en="Add to Bag" data-fr="Ajouter">Add to Bag</button>
+        </div>
+        <div class="product-card">
+            <img src="2.jpg">
+            <h3 data-en="Butterfly Necklace" data-fr="Collier Papillon">Butterfly Necklace</h3><p>15.000 DT</p>
+            <button class="btn-black" onclick="addToBag('Butterfly Necklace', 15.000, '2.jpg')" data-en="Add to Bag" data-fr="Ajouter">Add to Bag</button>
+        </div>
+        <div class="product-card">
+            <img src="3.jpg">
+            <h3 data-en="Ladybug Charm" data-fr="Charme Coccinelle">Ladybug Charm</h3><p>15.000 DT</p>
+            <button class="btn-black" onclick="addToBag('Ladybug Charm', 15.000, '3.jpg')" data-en="Add to Bag" data-fr="Ajouter">Add to Bag</button>
+        </div>
+        <div class="product-card">
+            <img src="4.jpeg">
+            <h3 data-en="Cherry Necklace" data-fr="Collier Cerise">Cherry Necklace</h3><p>15.000 DT</p>
+            <button class="btn-black" onclick="addToBag('Cherry Necklace', 15.000, '4.jpeg')" data-en="Add to Bag" data-fr="Ajouter">Add to Bag</button>
+        </div>
+    </section>
+</div>
+
+<footer>
+    <div class="logo-main" style="color:white; margin-bottom:1rem">FATY</div>
+    <div class="footer-links-container">
+        <a href="mailto:faty.accessories@gmail.com" class="footer-link">✉️ faty.accessories@gmail.com</a>
+        <a href="https://wa.me/21628556548" class="footer-link" target="_blank">💬 WhatsApp: +216 28 556 548</a>
+    </div>
+</footer>
+
+<div id="contact-modal" class="overlay">
+    <div class="modal-card" style="max-width:450px; padding:30px;">
+        <span class="close-x" onclick="toggleModal('contact-modal')">×</span>
+        <h2 style="font-family:Playfair Display">Contact Us</h2>
+        <form id="contact-form">
+            <input type="text" placeholder="Name" required>
+            <input type="email" placeholder="Email" required>
+            <textarea placeholder="Your Message" required style="height:100px"></textarea>
+            <button type="button" class="btn-black" onclick="sendContactMessage()">Send Message</button>
+        </form>
+    </div>
+</div>
+
+<div id="bag-modal" class="overlay">
+    <div class="modal-card" style="max-width:600px; padding:30px;">
+        <span class="close-x" onclick="toggleModal('bag-modal')">×</span>
+        <h2 style="font-family:Playfair Display" data-en="Your Bag" data-fr="Votre Panier">Your Bag</h2>
+        <div id="bag-list"></div>
+        <div class="bag-footer">
+            <input type="text" id="cust-phone" placeholder="Phone / Téléphone" required>
+            <textarea id="cust-address" placeholder="Address / Adresse" required style="height:80px"></textarea>
+            <div style="text-align:right; margin-top: 15px;">
+                <p>Delivery: 8.000 DT</p>
+                <h3>Total: <span id="total">0.000</span> DT</h3>
+                <button type="button" id="confirm-btn" class="btn-black" onclick="submitOrder()" data-en="Confirm Order" data-fr="Confirmer">Confirm Order</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="success-modal">
+    <h2 style="color: green; font-size: 3rem;">✔</h2>
+    <h2 data-en="Order Confirmed!" data-fr="Commande Confirmée!">Order Confirmed!</h2>
+    <p data-en="We will contact you soon." data-fr="Nous vous contacterons bientôt.">We will contact you soon.</p>
+    <button class="btn-black" onclick="closeSuccess()">OK</button>
+</div>
+
+<div id="auth-modal" class="overlay">
+    <div class="modal-card auth-card" id="auth-box">
+        <span class="close-x" onclick="toggleModal('auth-modal')">×</span>
+        <div class="side-panel" id="side-panel-auth">
+            <h2 id="side-title" data-en="New Here?" data-fr="Nouveau?">New Here?</h2>
+            <button class="btn-black" style="background:none; border:1px solid white" onclick="swapAuth()" id="swap-btn">Sign Up</button>
+        </div>
+        <div class="form-area" id="auth-form-area">
+            <div id="auth-fields-container">
+                <h2 id="form-title" data-en="Welcome Back" data-fr="Bon retour">Welcome Back</h2>
+                <div id="reg-field" style="display:none"><input type="text" id="reg-name" placeholder="Full Name"></div>
+                <input type="email" id="auth-email" placeholder="Email">
+                <input type="password" id="auth-pass" placeholder="Password">
+                <p id="forgot-link" onclick="startRecovery()" style="font-size: 11px; cursor: pointer; text-decoration: underline; margin-top: -5px;">Forgot Password?</p>
+                <button class="btn-black" onclick="handleAuth()" data-en="Continue" data-fr="Continuer">Continue</button>
+            </div>
+
+            <div id="recovery-container" style="display:none; text-align: center;">
+                <h2 style="font-family: Playfair Display;">Recovery</h2>
+                <div id="rec-step-1">
+                    <p style="font-size:12px">Enter email to receive code</p>
+                    <input type="email" id="rec-email" placeholder="Email">
+                    <button class="btn-black" onclick="sendRecoveryCode()">Get Code</button>
+                </div>
+                <div id="rec-step-2" style="display:none">
+                    <p style="font-size:12px">Enter the 4-digit code</p>
+                    <input type="text" id="rec-input-code" placeholder="0000" maxlength="4">
+                    <button class="btn-black" onclick="verifyRecoveryCode()">Verify</button>
+                    <p id="rec-error" style="color:red; font-size:11px; display:none; margin-top:10px;">Wrong code. Please try again.</p>
+                </div>
+                <div id="rec-step-3" style="display:none">
+                    <p style="font-size:12px">Set New Password</p>
+                    <input type="password" id="rec-new-pass" placeholder="New Password">
+                    <button class="btn-black" onclick="finishRecovery()">Reset Password</button>
+                </div>
+                <p onclick="cancelRecovery()" style="font-size:11px; cursor:pointer; margin-top:15px">Back to Login</p>
+            </div>
+
+            <div id="user-profile-container" style="display:none; text-align: center;">
+                <h2 id="hi-user" style="font-family: 'Playfair Display'; font-size: 1.8rem;">Hi, Name</h2>
+                <button class="btn-black" onclick="logout()" data-en="Log Out" data-fr="Déconnexion">Log Out</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="choice-modal">
+    <h2 data-en="Added!" data-fr="Ajouté!">Added!</h2>
+    <button class="btn-black" onclick="toggleModal('bag-modal'); closeChoice();" data-en="View Bag" data-fr="Voir Panier">View Bag</button><br><br>
+    <button class="btn-black" style="background:white; color:black; border:1px solid black;" onclick="closeChoice()" data-en="Keep Shopping" data-fr="Continuer">Keep Shopping</button>
+</div>
+
+<script src="script.js"></script>
+<script src="https://www.w3counter.com/tracker.js?id=157124"></script>
+</body>
+</html>
