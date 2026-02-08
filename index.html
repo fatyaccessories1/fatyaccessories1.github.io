@@ -44,30 +44,27 @@
         <span class="line"></span>
     </div>
 
-    <section style="display: flex; flex-direction: column; align-items: center; text-align: center; padding: 0px 10px 20px 10px; background: #fff0f3; margin: -25px 5% 0 5%; border-radius: 20px;">
-    <h3 style="font-family: 'Alex Brush'; font-size: 2rem; color: #d63384; margin-bottom: 2px; margin-top: 10px;">Valentine's Reveal In:</h3>
-    <div id="countdown" style="font-family: 'Inter'; font-weight: 600; font-size: 1.2rem; letter-spacing: 1px; color: #1a1a1a; margin-bottom: 15px;">
-        <span id="days">00</span>d <span id="hours">00</span>h <span id="minutes">00</span>m <span id="seconds">00</span>s
-    </div>
-
-    <div style="display: flex; flex-direction: row; flex-wrap: nowrap; gap: 10px; justify-content: center; width: 100%; overflow: hidden;">
-        
-        <div class="product-card" style="flex: 1; min-width: 0; padding: 10px;">
-            <img src="pink valentine.png" style="width: 100%; height: 150px; object-fit: cover; border-radius: 15px;">
-            <h3 style="font-size: 0.9rem;" data-en="pink valentine bracelet" data-fr="bracelet rose">pink valentine</h3>
-            <p style="font-size: 0.8rem;">10.000 DT</p>
-            <button class="btn-black" style="width: 100%; padding: 8px 5px; font-size: 0.7rem;" onclick="addToBag('pink valentine bracelet', 10.000, 'pink valentine.png')" data-en="Add" data-fr="Ajouter">Add to Bag</button>
+    <section style="display: flex; flex-direction: column; align-items: center; text-align: center; padding: 20px; background: #fff0f3; margin: 0 5%; border-radius: 20px;">
+        <h3 style="font-family: 'Alex Brush'; font-size: 2.2rem; color: #d63384; margin-bottom: 10px;">Valentine's Reveal In:</h3>
+        <div id="countdown" style="font-family: 'Inter'; font-weight: 600; font-size: 1.5rem; letter-spacing: 2px; color: #1a1a1a; margin-bottom: 20px;">
+            <span id="days">00</span>d <span id="hours">00</span>h <span id="minutes">00</span>m <span id="seconds">00</span>s
         </div>
 
-        <div class="product-card" style="flex: 1; min-width: 0; padding: 10px;">
-            <img src="red valentine.png" style="width: 100%; height: 150px; object-fit: cover; border-radius: 15px;">
-            <h3 style="font-size: 0.9rem;" data-en="red valentine bracelet" data-fr="bracelet rouge">red valentine</h3>
-            <p style="font-size: 0.8rem;">10.000 DT</p>
-            <button class="btn-black" style="width: 100%; padding: 8px 5px; font-size: 0.7rem;" onclick="addToBag('red valentine bracelet', 10.000, 'red valentine.png')" data-en="Add" data-fr="Ajouter">Add to Bag</button>
+        <div style="display: flex; flex-direction: row; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap;">
+            <div class="product-card" style="flex: 1; max-width: 300px;">
+                <img src="pink valentine.png" style="width: 100%; height: 200px; object-fit: cover; border-radius: 15px;">
+                <h3 data-en="pink valentine bracelet" data-fr="bracelet rose pour la Saint-Valentin">pink valentine bracelet</h3>
+                <p>10.000 DT</p>
+                <button class="btn-black" onclick="addToBag('pink valentine bracelet', 10.000, 'pink valentine bracelet')" data-en="Add to Bag" data-fr="Ajouter">Add to Bag</button>
+            </div>
+            <div class="product-card" style="flex: 1; max-width: 300px;">
+                <img src="red valentine.png" style="width: 100%; height: 200px; object-fit: cover; border-radius: 15px;">
+                <h3 data-en="red valentine bracelet" data-fr="bracelet rouge pour la Saint-Valentin">red valentine bracelet</h3>
+                <p>10.000 DT</p>
+                <button class="btn-black" onclick="addToBag('red valentine bracelet', 10.000, 'red valentine bracelet')" data-en="Add to Bag" data-fr="Ajouter">Add to Bag</button>
+            </div>
         </div>
-
-    </div>
-</section>
+    </section>
     
 
     <div class="section-divider">
@@ -245,11 +242,14 @@
 </div>
 
 <div id="choice-modal">
-    <h2 data-en="Added!" data-fr="Ajouté!">Added!</h2>
-    <button class="btn-black" onclick="toggleModal('bag-modal'); closeChoice();" data-en="View Bag" data-fr="Voir Panier">View Bag</button><br><br>
-    <button class="btn-black" style="background:white; color:black; border:1px solid black;" onclick="closeChoice()" data-en="Keep Shopping" data-fr="Continuer">Keep Shopping</button>
+    <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; gap: 10px;">
+        <h2 style="margin: 0; font-size: 1.1rem; font-family: 'Playfair Display';" data-en="Added!" data-fr="Ajouté!">Added!</h2>
+        <div style="display: flex; gap: 8px;">
+            <button class="btn-black" onclick="toggleModal('bag-modal'); closeChoice();" data-en="VIEW BAG" data-fr="VOIR" style="padding: 10px 12px; font-size: 0.6rem; min-width: 85px; margin:0;">VIEW BAG</button>
+            <button class="btn-black" style="background:white; color:black; border:1px solid black; padding: 10px 12px; font-size: 0.6rem; min-width: 85px; margin:0;" onclick="closeChoice()" data-en="KEEP SHOPPING" data-fr="CONTINUER">KEEP SHOPPING</button>
+        </div>
+    </div>
 </div>
-
 <script src="script.js"></script>
 <script src="https://www.w3counter.com/tracker.js?id=157124"></script>
 </body>
