@@ -6,7 +6,7 @@
     <title>FATY ACCESSORIES</title>
     <link rel="icon" href="https://img.icons8.com/emoji/48/sparkles.png?v=2" type="image/png">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&family=Alex+Brush&display=swap" rel="stylesheet">
-    
+
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -40,11 +40,41 @@
 
     <div class="section-divider">
         <span class="line"></span>
+        <h2 class="divider-text" style="color: #d63384;" data-en="VALENTINE SPECIAL" data-fr="SPÉCIAL VALENTIN">VALENTINE SPECIAL</h2>
+        <span class="line"></span>
+    </div>
+
+    <section style="display: flex; flex-direction: column; align-items: center; text-align: center; padding: 5px 20px 20px 20px; background: #fff0f3; margin: -15px 5% 0 5%; border-radius: 20px;">
+    <h3 style="font-family: 'Alex Brush'; font-size: 2.2rem; color: #d63384; margin-bottom: 5px;">Valentine's Reveal In:</h3>
+    <div id="countdown" style="font-family: 'Inter'; font-weight: 600; font-size: 1.5rem; letter-spacing: 2px; color: #1a1a1a; margin-bottom: 10px;">
+        <span id="days">00</span>d <span id="hours">00</span>h <span id="minutes">00</span>m <span id="seconds">00</span>s
+    </div>
+
+    <div style="display: flex; flex-direction: row; gap: 15px; justify-content: center; width: 100%; flex-wrap: wrap;">
+        <div class="product-card" style="flex: 1; max-width: 300px;">
+            <img src="pink valentine.png" style="width: 100%; height: 200px; object-fit: cover; border-radius: 15px;">
+            <h3 data-en="pink valentine bracelet" data-fr="bracelet rose pour la Saint-Valentin">pink valentine bracelet</h3>
+            <p>10.000 DT</p>
+            <button class="btn-black" onclick="addToBag('pink valentine bracelet', 10.000, 'pink valentine bracelet')" data-en="Add to Bag" data-fr="Ajouter">Add to Bag</button>
+        </div>
+        <div class="product-card" style="flex: 1; max-width: 300px;">
+            <img src="red valentine.png" style="width: 100%; height: 200px; object-fit: cover; border-radius: 15px;">
+            <h3 data-en="red valentine bracelet" data-fr="bracelet rouge pour la Saint-Valentin">red valentine bracelet</h3>
+            <p>10.000 DT</p>
+            <button class="btn-black" onclick="addToBag('red valentine bracelet', 10.000, 'red valentine bracelet')" data-en="Add to Bag" data-fr="Ajouter">Add to Bag</button>
+        </div>
+    </div>
+</section>
+    
+
+    <div class="section-divider">
+        <span class="line"></span>
         <h2 class="divider-text" data-en="NEW COLLECTION" data-fr="NOUVELLE COLLECTION">NEW COLLECTION</h2>
         <span class="line"></span>
     </div>
 
     <section class="products">
+
         <div class="product-card">
             <img src="n1.png">
             <h3 data-en="Heart with Flower" data-fr="Cœur avec fleur">Heart with Flower</h3><p>12.000 DT</p>
@@ -71,8 +101,10 @@
             <button class="btn-black" onclick="addToBag('Engraved Flower', 11.000, 'n5.png')" data-en="Add to Bag" data-fr="Ajouter">Add to Bag</button>
         </div>
     </section>
+
     <hr>
-        <section class="products">
+
+    <section class="products">
         <div class="product-card">
             <img src="2.jpg">
             <h3 data-en="Butterfly Necklace" data-fr="Collier Papillon">Butterfly Necklace</h3><p>12.000 DT</p>
@@ -89,6 +121,15 @@
             <button class="btn-black" onclick="addToBag('Cherry Necklace', 11.000, '4.jpeg')" data-en="Add to Bag" data-fr="Ajouter">Add to Bag</button>
         </div>
     </section>
+
+    <div class="section-divider">
+        <span class="line"></span>
+        <h2 class="divider-text" data-en="REVIEWS" data-fr="AVIS">REVIEWS</h2>
+        <span class="line"></span>
+    </div>
+    <div style="text-align: center; padding: 2rem;">
+        <button class="btn-black" onclick="toggleModal('review-modal')" data-en="Leave a Review" data-fr="Laisser un avis">Leave a Review</button>
+    </div>
 </div>
 
 <footer>
@@ -98,6 +139,24 @@
         <a href="https://wa.me/21628556548" class="footer-link" target="_blank">💬 WhatsApp: +216 28 556 548</a>
     </div>
 </footer>
+
+<div id="review-modal" class="overlay">
+    <div class="modal-card" style="max-width:450px; padding:30px;">
+        <span class="close-x" onclick="toggleModal('review-modal')">×</span>
+        <h2 style="font-family:Playfair Display">Customer Review</h2>
+        <form id="review-form">
+            <input type="text" id="rev-name" placeholder="Your Name" required>
+            <textarea id="rev-text" placeholder="Share your experience..." required style="height:100px"></textarea>
+            
+            <label class="photo-upload-label">
+                <span>📷 Add Photo (Optional)</span>
+                <input type="file" id="rev-photo" accept="image/*" style="display: none;">
+            </label>
+
+            <button type="button" class="btn-black" style="width: 100%;" onclick="sendReview()">Submit Review</button>
+        </form>
+    </div>
+</div>
 
 <div id="contact-modal" class="overlay">
     <div class="modal-card" style="max-width:450px; padding:30px;">
@@ -129,7 +188,7 @@
     </div>
 </div>
 
-<div id="success-modal">
+<div id="success-modal" style="display:none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 2.5rem; z-index: 10000; border-radius: 30px; text-align: center; width: 90%; max-width: 380px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
     <h2 style="color: green; font-size: 3rem;">✔</h2>
     <h2 data-en="Order Confirmed!" data-fr="Commande Confirmée!">Order Confirmed!</h2>
     <p data-en="We will contact you soon." data-fr="Nous vous contacterons bientôt.">We will contact you soon.</p>

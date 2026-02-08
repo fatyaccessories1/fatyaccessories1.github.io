@@ -17,6 +17,9 @@ window.onload = () => {
     
     const savedLang = localStorage.getItem('faty_lang') || 'en';
     setLang(savedLang);
+
+    // Initializing Valentine Countdown
+    startValentineCountdown();
 };
 
 async function notifyAdmin(type, details) {
@@ -240,7 +243,18 @@ function removeFromBag(index) {
     updateBag(); 
 }
 
-function addToBag(name, price, img) { cart.push({name, price, img}); updateBag(); document.getElementById('choice-modal').classList.add('active-popup'); }
+// UPDATED TO SUPPORT THE NEW MODAL DESIGN
+function addToBag(name, price, img) { 
+    cart.push({name, price, img}); 
+    updateBag(); 
+    
+    // Filling the SHEIN-style modal content
+    if(document.getElementById('modal-item-img')) document.getElementById('modal-item-img').src = img;
+    if(document.getElementById('modal-item-name')) document.getElementById('modal-item-name').innerText = name;
+    if(document.getElementById('modal-item-price')) document.getElementById('modal-item-price').innerText = price.toFixed(3) + " DT";
+    
+    document.getElementById('choice-modal').classList.add('active-popup'); 
+}
 
 function swapAuth() { 
     isLogin = !isLogin; 
@@ -249,8 +263,10 @@ function swapAuth() {
     document.getElementById('forgot-link').style.display = isLogin ? "block" : "none";
 
     const closeBtn = document.querySelector('#auth-modal .close-x');
-    closeBtn.style.right = "20px";
-    closeBtn.style.color = isLogin ? "#1a1a1a" : "#ffffff";
+    if(closeBtn) {
+        closeBtn.style.right = "20px";
+        closeBtn.style.color = isLogin ? "#1a1a1a" : "#ffffff";
+    }
 }
 
 function toggleLang() {
@@ -265,4 +281,52 @@ function setLang(lang) {
         el.innerText = el.getAttribute(`data-${lang}`);
     });
     document.getElementById('lang-drop').style.display = 'none';
+}
+
+function startValentineCountdown() {
+    const targetDate = new Date("February 14, 2026 00:00:00").getTime();
+    
+    setInterval(() => {
+        const now = new Date().getTime();
+        const distance = targetDate - now;
+
+        const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((distance % (1000 * 60)) / 1000);
+
+        if(distance > 0) {
+            if(document.getElementById("days")) document.getElementById("days").innerText = d;
+            if(document.getElementById("hours")) document.getElementById("hours").innerText = h;
+            if(document.getElementById("minutes")) document.getElementById("minutes").innerText = m;
+            if(document.getElementById("seconds")) document.getElementById("seconds").innerText = s;
+        }
+    }, 1000);
+}
+
+async function sendReview() {
+    const name = document.getElementById('rev-name').value;
+    const text = document.getElementById('rev-text').value;
+    const photoInput = document.getElementById('rev-photo');
+    const photo = photoInput ? photoInput.files[0] : null;
+
+    if(!name || !text) { alert("Please fill all fields."); return; }
+
+    const btn = document.querySelector('#review-modal .btn-black');
+    btn.disabled = true; btn.innerText = "Sending...";
+
+    await notifyAdmin("Customer Review", { 
+        Name: name, 
+        Review: text,
+        PhotoAttached: photo ? "Yes" : "No" 
+    });
+
+    btn.disabled = false; btn.innerText = "Submit Review";
+    alert("Thank you for your review!");
+    
+    document.getElementById('rev-name').value = "";
+    document.getElementById('rev-text').value = "";
+    if(photoInput) photoInput.value = "";
+    
+    toggleModal('review-modal');
 }
