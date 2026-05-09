@@ -27,12 +27,22 @@ window.onload = () => {
     startValentineCountdown();
 };
 
-// Central function to handle all FormBold transmissions
+// --- CORRECTED NOTIFYADMIN (Handles Files/Photos) ---
 async function notifyAdmin(type, details, targetEndpoint) {
     const formData = new FormData();
     formData.append("Type", type);
+    
+    // Add text details
     for (const key in details) {
         formData.append(key, details[key]);
+    }
+
+    // Grab photo specifically for reviews
+    if (type === "Customer Review") {
+        const photoInput = document.getElementById('rev-photo');
+        if (photoInput && photoInput.files[0]) {
+            formData.append("Review_Photo", photoInput.files[0]);
+        }
     }
     
     return fetch(targetEndpoint, {
@@ -320,9 +330,11 @@ function startValentineCountdown() {
     }, 1000);
 }
 
+// --- CORRECTED SENDREVIEW (Handles UI and trigger) ---
 async function sendReview() {
     const name = document.getElementById('rev-name').value;
     const text = document.getElementById('rev-text').value;
+    const photoInput = document.getElementById('rev-photo');
 
     if(!name || !text) { alert("Please fill all fields."); return; }
 
@@ -339,6 +351,7 @@ async function sendReview() {
     
     document.getElementById('rev-name').value = "";
     document.getElementById('rev-text').value = "";
+    if(photoInput) photoInput.value = ""; 
     
     toggleModal('review-modal');
 }
