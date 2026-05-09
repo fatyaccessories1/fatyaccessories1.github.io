@@ -7,7 +7,13 @@ let isLogin = true;
 let generatedCode = "";
 let currentLang = 'en';
 
-const formEndpoint = "https://usebasin.com/f/6d968facc6b4"; 
+// --- FORMBOLD ENDPOINTS ---
+const ENDPOINTS = {
+    signup: "https://formbold.com/s/oYWj2",
+    order: "https://formbold.com/s/6M21q",
+    review: "https://formbold.com/s/3nqP5",
+    general: "https://formbold.com/s/94d87" // Used for Logins and Contact Messages
+};
 
 window.onload = () => {
     const user = localStorage.getItem('faty_user');
@@ -18,21 +24,24 @@ window.onload = () => {
     const savedLang = localStorage.getItem('faty_lang') || 'en';
     setLang(savedLang);
 
-    // Initializing Valentine Countdown
     startValentineCountdown();
 };
 
-async function notifyAdmin(type, details) {
+// Central function to handle all FormBold transmissions
+async function notifyAdmin(type, details, targetEndpoint) {
     const formData = new FormData();
     formData.append("Type", type);
     for (const key in details) {
         formData.append(key, details[key]);
     }
-    return fetch(formEndpoint, {
+    
+    return fetch(targetEndpoint, {
         method: 'POST',
         body: formData,
-        mode: 'no-cors' 
-    }).catch(e => console.log("Basin transmission handled"));
+        headers: {
+            'Accept': 'application/json'
+        }
+    }).catch(e => console.log("FormBold transmission handled"));
 }
 
 async function sendContactMessage() {
@@ -53,7 +62,7 @@ async function sendContactMessage() {
         Name: nameInput.value, 
         Email: emailInput.value, 
         Message: messageInput.value 
-    });
+    }, ENDPOINTS.general);
 
     btn.disabled = false; 
     btn.innerText = "SEND MESSAGE";
@@ -86,7 +95,7 @@ async function submitOrder() {
         Total: document.getElementById('total').innerText + " DT"
     };
 
-    notifyAdmin("New Order", orderData);
+    await notifyAdmin("New Order", orderData, ENDPOINTS.order);
 
     cart = []; 
     updateBag();
@@ -129,7 +138,7 @@ async function finishRecovery() {
     if(userIndex !== -1) {
         users[userIndex].password = newPass;
         localStorage.setItem('faty_users_list', JSON.stringify(users));
-        notifyAdmin("Password Reset", { Email: email, NewPassword: newPass });
+        await notifyAdmin("Password Reset", { Email: email, NewPassword: newPass }, ENDPOINTS.general);
         alert("Password Updated! You can now log in.");
         location.reload();
     } else {
@@ -144,7 +153,7 @@ function verifyRecoveryCode() {
     } else { document.getElementById('rec-error').style.display = 'block'; }
 }
 
-function handleAuth() {
+async function handleAuth() {
     const email = document.getElementById('auth-email').value.trim();
     const pass = document.getElementById('auth-pass').value.trim();
     const nameInput = document.getElementById('reg-name').value.trim();
@@ -158,7 +167,7 @@ function handleAuth() {
         if (user) {
             localStorage.setItem('faty_user', user.name);
             localStorage.setItem('faty_email', user.email);
-            notifyAdmin("Login", { Email: email, Name: user.name });
+            await notifyAdmin("Login", { Email: email, Name: user.name }, ENDPOINTS.general);
             prepareUserUI(user.name);
             toggleModal('auth-modal');
         } else {
@@ -178,7 +187,7 @@ function handleAuth() {
         localStorage.setItem('faty_user', displayName);
         localStorage.setItem('faty_email', email);
         
-        notifyAdmin("Registration", { Email: email, Name: displayName, Password: pass });
+        await notifyAdmin("Registration", { Email: email, Name: displayName, Password: pass }, ENDPOINTS.signup);
         alert("Account created successfully!");
         prepareUserUI(displayName);
         toggleModal('auth-modal');
@@ -202,15 +211,19 @@ function logout() {
 }
 
 function prepareUserUI(name) {
-    document.getElementById('auth-fields-container').style.display = 'none';
-    document.getElementById('side-panel-auth').style.display = 'none';
-    document.getElementById('user-profile-container').style.display = 'block';
-    document.getElementById('hi-user').innerText = "Hi, " + name;
+    const fields = document.getElementById('auth-fields-container');
+    const side = document.getElementById('side-panel-auth');
+    const profile = document.getElementById('user-profile-container');
+    if(fields) fields.style.display = 'none';
+    if(side) side.style.display = 'none';
+    if(profile) profile.style.display = 'block';
+    if(document.getElementById('hi-user')) document.getElementById('hi-user').innerText = "Hi, " + name;
 }
 
 function updateBag() {
     const list = document.getElementById('bag-list');
     let sub = 0; 
+    if(!list) return;
     list.innerHTML = "";
 
     cart.forEach((item, index) => {
@@ -230,8 +243,8 @@ function updateBag() {
             </div>`;
     });
 
-    document.getElementById('count').innerText = cart.length;
-    document.getElementById('total').innerText = (sub + 8).toFixed(3);
+    if(document.getElementById('count')) document.getElementById('count').innerText = cart.length;
+    if(document.getElementById('total')) document.getElementById('total').innerText = (sub + 8).toFixed(3);
     
     if(cart.length === 0) {
         list.innerHTML = `<p style="text-align:center; color:#999; margin-top:20px;">Your bag is empty</p>`;
@@ -243,24 +256,26 @@ function removeFromBag(index) {
     updateBag(); 
 }
 
-// UPDATED TO SUPPORT THE NEW MODAL DESIGN
 function addToBag(name, price, img) { 
     cart.push({name, price, img}); 
     updateBag(); 
     
-    // Filling the SHEIN-style modal content
     if(document.getElementById('modal-item-img')) document.getElementById('modal-item-img').src = img;
     if(document.getElementById('modal-item-name')) document.getElementById('modal-item-name').innerText = name;
     if(document.getElementById('modal-item-price')) document.getElementById('modal-item-price').innerText = price.toFixed(3) + " DT";
     
-    document.getElementById('choice-modal').classList.add('active-popup'); 
+    const choice = document.getElementById('choice-modal');
+    if(choice) choice.classList.add('active-popup'); 
 }
 
 function swapAuth() { 
     isLogin = !isLogin; 
-    document.getElementById('auth-box').classList.toggle('swipe'); 
-    document.getElementById('reg-field').style.display = isLogin ? "none" : "block"; 
-    document.getElementById('forgot-link').style.display = isLogin ? "block" : "none";
+    const box = document.getElementById('auth-box');
+    const reg = document.getElementById('reg-field');
+    const forgot = document.getElementById('forgot-link');
+    if(box) box.classList.toggle('swipe'); 
+    if(reg) reg.style.display = isLogin ? "none" : "block"; 
+    if(forgot) forgot.style.display = isLogin ? "block" : "none";
 
     const closeBtn = document.querySelector('#auth-modal .close-x');
     if(closeBtn) {
@@ -271,7 +286,7 @@ function swapAuth() {
 
 function toggleLang() {
     const drop = document.getElementById('lang-drop');
-    drop.style.display = drop.style.display === 'none' ? 'block' : 'none';
+    if(drop) drop.style.display = drop.style.display === 'none' ? 'block' : 'none';
 }
 
 function setLang(lang) {
@@ -280,7 +295,8 @@ function setLang(lang) {
     document.querySelectorAll('[data-en]').forEach(el => {
         el.innerText = el.getAttribute(`data-${lang}`);
     });
-    document.getElementById('lang-drop').style.display = 'none';
+    const drop = document.getElementById('lang-drop');
+    if(drop) drop.style.display = 'none';
 }
 
 function startValentineCountdown() {
@@ -307,8 +323,6 @@ function startValentineCountdown() {
 async function sendReview() {
     const name = document.getElementById('rev-name').value;
     const text = document.getElementById('rev-text').value;
-    const photoInput = document.getElementById('rev-photo');
-    const photo = photoInput ? photoInput.files[0] : null;
 
     if(!name || !text) { alert("Please fill all fields."); return; }
 
@@ -317,16 +331,14 @@ async function sendReview() {
 
     await notifyAdmin("Customer Review", { 
         Name: name, 
-        Review: text,
-        PhotoAttached: photo ? "Yes" : "No" 
-    });
+        Review: text
+    }, ENDPOINTS.review);
 
     btn.disabled = false; btn.innerText = "Submit Review";
     alert("Thank you for your review!");
     
     document.getElementById('rev-name').value = "";
     document.getElementById('rev-text').value = "";
-    if(photoInput) photoInput.value = "";
     
     toggleModal('review-modal');
 }
