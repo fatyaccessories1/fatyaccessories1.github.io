@@ -284,5 +284,42 @@
 
 <script src="script.js"></script>
 <script src="https://www.w3counter.com/tracker.js?id=157124"></script>
+    <script>
+  function sendReview() {
+    const name = document.getElementById('rev-name').value;
+    const review = document.getElementById('rev-text').value;
+    const photo = document.getElementById('rev-photo').files[0];
+
+    if (!name || !review) {
+      alert("Please fill in all fields.");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("Name", name);
+    formData.append("Review", review);
+    if (photo) {
+      formData.append("Review_Photo", photo);
+    }
+
+    // Use your actual ID from the screenshot here:
+    fetch("https://usebasin.com/f/6d968facc6b4", {
+      method: "POST",
+      body: formData,
+    })
+    .then(response => {
+      if (response.ok) {
+        alert("Thank you! Your review has been sent for moderation.");
+        toggleModal('review-modal');
+        document.getElementById('review-form').reset();
+      } else {
+        alert("Failed to send review. Please check your Basin Form ID.");
+      }
+    })
+    .catch(error => {
+      alert("An error occurred. Please try again.");
+    });
+  }
+</script>
 </body>
 </html>
